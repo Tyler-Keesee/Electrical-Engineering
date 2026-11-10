@@ -1,2 +1,2 @@
 # Electrical-Engineering
-Electrical engineering i designed
+A website to teach you about Electrical Engineering with hands on simulations etc..
