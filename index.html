@@ -62,10 +62,11 @@
         </section>
         <section id="feedback" aria-labelledby="feedback-heading">
             <h2 id="feedback-heading">Feedback</h2>
-            <form action="/submit-feedback" method="POST">
+            <form id="feedback-form" action="mailto:rescuepcrepairs@gmail.com" method="GET" enctype="text/plain">
                 <label for="feedback-text">Your Feedback:</label>
                 <textarea id="feedback-text" name="feedback" required placeholder="Type your feedback here..." rows="4"></textarea>
-                <button type="submit">Submit Feedback</button>
+                <button type="submit">Prepare Feedback Email</button>
+                <p id="feedback-help">This opens your email application; the site does not collect or store messages. If no email app is configured, <a href="https://github.com/Tyler-Keesee/Electrical-Engineering/issues" target="_blank" rel="noopener noreferrer">open a GitHub issue</a> instead.</p>
             </form>
         </section>
     </main>
