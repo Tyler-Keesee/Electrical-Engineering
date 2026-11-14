@@ -46,11 +46,12 @@ document.addEventListener("DOMContentLoaded", () => {
         descP.textContent = description;
         resourceDiv.appendChild(descP);
 
-        if (link) {
+        if (link && link !== '#') {
             const linkA = document.createElement('a');
             linkA.href = link;
             linkA.textContent = 'View Resource';
             linkA.target = '_blank';
+            linkA.rel = 'noopener noreferrer';
             resourceDiv.appendChild(linkA);
         }
 
@@ -75,12 +76,17 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        container.innerHTML = '';
+        // Preserve the section heading and introductory copy; only replace dynamic cards.
+        let list = container.querySelector('[data-resource-list]');
+        if (!list) {
+            list = document.createElement('div');
+            list.setAttribute('data-resource-list', '');
+            container.appendChild(list);
+        }
+        list.replaceChildren();
         resources[resourceType].forEach(resource => {
             const element = createResourceElement(resource);
-            if (element) {
-                container.appendChild(element);
-            }
+            if (element) list.appendChild(element);
         });
     }
 
@@ -92,7 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.setTimeout(() => {
             if (testAd.offsetHeight === 0) {
                 console.warn('AdBlocker detected: Some features like videos might not work correctly.');
-                document.getElementById('adBlockWarning').style.display = 'block';
+                const warning = document.getElementById('adBlockWarning');
+                if (warning) warning.style.display = 'block';
             }
             testAd.remove();
         }, 100);
