@@ -1,55 +1,25 @@
-// Assuming ECMAScript modules are supported and set up correctly
-import { resources } from './resourceManager.js';
+// Site navigation and resource rendering live in resourcemanager.js.
+// Keep search logic separate so a missing optional module cannot block page loading.
+function filterResources() {
+  const input = document.getElementById('searchInput');
+  if (!input) return;
+  const query = String(input.value || '').trim().toLocaleLowerCase();
+  for (const card of document.querySelectorAll('.resource')) {
+    const searchable = String(card.textContent || '').toLocaleLowerCase();
+    card.style.display = !query || searchable.includes(query) ? '' : 'none';
+  }
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-    initResourceDisplay();
+// Used by the existing inline Search button.
+window.searchFunction = filterResources;
 
-    document.querySelector('nav').addEventListener('click', handleNavigationClick);
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('searchInput');
+  if (input) input.addEventListener('input', filterResources);
+
+  const nav = document.querySelector('nav');
+  if (nav) nav.addEventListener('click', () => {
+    // Reapply the active filter after resource cards are re-rendered.
+    window.requestAnimationFrame?.(filterResources);
+  });
 });
-
-function initResourceDisplay() {
-    Object.keys(resources).forEach(displayResources);
-}
-
-function displayResources(resourceType) {
-    const container = document.querySelector(`#${resourceType}`);
-    if (!container) {
-        console.error(`Invalid container for resources: ${resourceType}`);
-        return;
-    }
-
-    // Clear the container and prepare for new content
-    container.innerHTML = '';
-    const fragment = document.createDocumentFragment();
-
-    resources[resourceType].forEach(resource => {
-        fragment.appendChild(createResourceElement(resource));
-    });
-
-    container.appendChild(fragment);
-}
-
-function createResourceElement(resource) {
-    const element = document.createElement('div');
-    element.className = 'resource';
-    element.innerHTML = `
-        <h3 class="resource-title">${resource.title}</h3>
-        <p class="resource-description">${resource.description}</p>
-        ${resource.link ? `<a href="${resource.link}" class="resource-link" target="_blank">View Resource</a>` : ''}
-        ${resource.videoId ? `<iframe class="resource-video" src="https://www.youtube.com/embed/${resource.videoId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen frameborder="0" style="width:100%; height:auto; aspectRatio:16/9;"></iframe>` : ''}
-    `;
-    return element;
-}
-
-function handleNavigationClick(event) {
-    const target = event.target.closest('a');
-    if (target && target.hash) {
-        const resourceType = target.hash.substring(1);
-        if (resources[resourceType]) {
-            displayResources(resourceType);
-        } else {
-            console.error(`Resource category not found: ${resourceType}`);
-        }
-    }
-}
-

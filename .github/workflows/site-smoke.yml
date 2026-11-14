@@ -1,0 +1,33 @@
+name: Verify static electrical learning site
+on:
+  push:
+    branches: [main]
+    paths: ['index.html', 'main.js', 'resourcemanager.js', 'tests/**', '.github/workflows/site-smoke.yml']
+  pull_request:
+    paths: ['index.html', 'main.js', 'resourcemanager.js', 'tests/**', '.github/workflows/site-smoke.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - run: node --test tests/*.test.mjs
+      - name: Headless Chrome DOM smoke test
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ee-site.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" || true' EXIT
+          sleep 2
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$browser"
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4000 --dump-dom http://127.0.0.1:8765/index.html > /tmp/ee-rendered.html
+          grep -q 'data-resource-list' /tmp/ee-rendered.html
+          grep -q 'Introduction to Circuit Analysis' /tmp/ee-rendered.html
+          grep -q 'Soldering Basics' /tmp/ee-rendered.html
+
