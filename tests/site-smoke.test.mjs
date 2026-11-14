@@ -44,3 +44,13 @@ test('search filters resource cards and resets when the query clears', () => {
   window.searchFunction();
   assert.equal(cards[1].style.display, '');
 });
+
+test('feedback uses a composed mailto and offers issues fallback, without nonexistent backend', () => {
+  const html = read('index.html');
+  const source = read('main.js');
+  assert.doesNotMatch(html, /action="\/submit-feedback"/);
+  assert.match(html, /id="feedback-form"/);
+  assert.match(html, /github.com\/Tyler-Keesee\/Electrical-Engineering\/issues/);
+  assert.match(source, /encodeURIComponent\(feedback\.slice\(0, 1500\)\)/);
+  assert.match(source, /mailto:rescuepcrepairs@gmail\.com/);
+});
