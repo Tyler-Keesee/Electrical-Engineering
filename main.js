@@ -17,6 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('searchInput');
   if (input) input.addEventListener('input', filterResources);
 
+  const feedbackForm = document.getElementById('feedback-form');
+  if (feedbackForm) {
+    feedbackForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const feedback = String(document.getElementById('feedback-text')?.value || '').trim();
+      if (!feedback) return;
+      const subject = encodeURIComponent('Electrical Engineering Learning Platform feedback');
+      const body = encodeURIComponent(feedback.slice(0, 1500));
+      window.location.href = 'mailto:rescuepcrepairs@gmail.com?subject=' + subject + '&body=' + body;
+    });
+  }
+
   const nav = document.querySelector('nav');
   if (nav) nav.addEventListener('click', () => {
     // Reapply the active filter after resource cards are re-rendered.
