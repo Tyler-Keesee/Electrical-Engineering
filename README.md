@@ -1,5 +1,28 @@
 # Electrical Engineering Learning Platform
 
+## Windows 11: copy-paste setup, one command per step
+
+This is a static HTML/CSS/JavaScript website. You do **not** need `venv`, `pip install`, or `npm install`. Install Git and Python 3, open PowerShell, and execute **each command separately**.
+
+```powershell
+git clone https://github.com/Tyler-Keesee/Electrical-Engineering.git
+```
+
+```powershell
+Set-Location .\Electrical-Engineering
+```
+
+```powershell
+python -m http.server 8000
+```
+
+Open **http://localhost:8000/** in Edge or Chrome. Press **Ctrl+C** in PowerShell to stop the server.
+
+To check JavaScript source and tests, install Node.js 22 separately and follow the existing **Tests** section. Serving files is not proof that external links, APIs, service workers, or all interactions work.
+
+---
+
+
 A lightweight, browser-based collection of **electrical engineering learning resources**.
 The page organizes circuit-analysis references, soldering tutorials, virtual-lab links, and quizzes.
 
